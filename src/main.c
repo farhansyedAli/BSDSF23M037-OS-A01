@@ -1,5 +1,3 @@
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -20,7 +18,11 @@ int main(void) {
     printf("after mystrcat: '%s' (len=%d)\n", a, mystrlen(a));
 
     // prepare a temporary sample file for testing wordCount / mygrep
+
     FILE* f = fopen("test.txt", "w+");
+
+    FILE* f = fopen("sample_input.txt", "w+");
+
     if (!f) {
         perror("fopen");
         return 1;

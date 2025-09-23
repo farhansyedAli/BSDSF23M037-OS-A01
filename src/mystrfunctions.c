@@ -1,5 +1,3 @@
-
-
 #include "../include/mystrfunctions.h"
 #include <stdio.h>
 
