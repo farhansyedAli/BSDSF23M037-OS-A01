@@ -1,46 +1,60 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "../include/mystrfunctions.h"
 #include "../include/myfilefunctions.h"
 
-int main() {
+int main(void) {
     printf("--- Testing String Functions ---\n");
-    char str1[50] = "Hello";
-    char str2[50];
 
-    printf("Length of '%s': %d\n", str1, mystrlen(str1));
+    const char* s = "hello world";
+    int len = mystrlen(s);
+    printf("mystrlen(\"%s\") = %d\n", s, len);
 
-    mystrcpy(str2, str1);
-    printf("Copied string: %s\n", str2);
+    char a[100];
+    int rc = mystrcpy(a, s);
+    printf("mystrcpy: return=%d, dest=\"%s\"\n", rc, a);
 
-    mystrncpy(str2, "World!", 3);
-    printf("After strncpy (3 chars): %s\n", str2);
+    char b[100];
+    rc = mystrncpy(b, "short", 8);
+    printf("mystrncpy: return=%d, dest=\"%s\"\n", rc, b);
 
-    mystrcat(str1, " World");
-    printf("After strcat: %s\n", str1);
+    rc = mystrcat(a, "!!!");
+    printf("mystrcat: return=%d, dest=\"%s\"\n", rc, a);
 
     printf("\n--- Testing File Functions ---\n");
-    FILE* file = fopen("test.txt", "r");
-    if (file) {
-        int lines, words, chars;
-        if (wordCount(file, &lines, &words, &chars) == 0) {
-            printf("Lines: %d, Words: %d, Characters: %d\n", lines, words, chars);
-        }
+    /* create sample file for testing */
+    FILE* f = fopen("sample.txt", "w+");
+    if (!f) { perror("fopen"); return 1; }
+    fprintf(f, "Hello world\n");
+    fprintf(f, "This is a test line\n");
+    fprintf(f, "search me\n");
+    fprintf(f, "another search me line\n");
+    fflush(f);
+    rewind(f);
 
-        char** matches;
-        int found = mygrep(file, "test", &matches);
-        if (found > 0) {
-            printf("Found %d matching lines:\n", found);
-            for (int i = 0; i < found; i++) {
-                printf("%s", matches[i]);
-                free(matches[i]);
-            }
-            free(matches);
-        }
-        fclose(file);
+    int lines = 0, words = 0, chars = 0;
+    if (wordCount(f, &lines, &words, &chars) == 0) {
+        printf("wordCount: lines=%d words=%d chars=%d\n", lines, words, chars);
     } else {
-        printf("Could not open test.txt for file function tests.\n");
+        printf("wordCount failed\n");
     }
 
+    rewind(f);
+    char** matches = NULL;
+    int mcount = mygrep(f, "search", &matches);
+    if (mcount >= 0) {
+        printf("mygrep found %d matches:\n", mcount);
+        for (int i = 0; i < mcount; ++i) {
+            printf("%s", matches[i]); /* matches include newline */
+            free(matches[i]);
+        }
+        free(matches);
+    } else {
+        printf("mygrep failed\n");
+    }
+
+    fclose(f);
+    remove("sample.txt");
     return 0;
 }
