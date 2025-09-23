@@ -1,4 +1,3 @@
-
 // File: include/mystrfunctions.h
 
 int mystrlen(const char* s);

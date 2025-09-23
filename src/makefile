@@ -1,5 +1,4 @@
-# src/makefile.
-
+# src/Makefile (for static library build)
 CC ?= gcc
 CFLAGS ?= -I../include -Wall -Wextra -std=gnu99
 OBJDIR ?= ../obj
@@ -7,8 +6,9 @@ BINDIR ?= ../bin
 LIBDIR ?= ../lib
 TARGET ?= $(BINDIR)/client_static
 
-SRCS := $(wildcard *.c)
-OBJS := $(patsubst %.c,$(OBJDIR)/%.o,$(SRCS))
+SRCS := main.c myfilefunctions.c mystrfunctions.c
+OBJS := $(OBJDIR)/main.o $(OBJDIR)/myfilefunctions.o $(OBJDIR)/mystrfunctions.o
+LIBOBJS := $(OBJDIR)/myfilefunctions.o $(OBJDIR)/mystrfunctions.o
 LIB := $(LIBDIR)/libmyutils.a
 
 .PHONY: all clean
@@ -24,19 +24,16 @@ $(BINDIR):
 $(LIBDIR):
 	mkdir -p $(LIBDIR)
 
-# Compile .c into .o inside ../obj
 $(OBJDIR)/%.o: %.c | $(OBJDIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Build static library from string + file functions
-$(LIB): $(OBJDIR)/myfilefunctions.o $(OBJDIR)/mystrfunctions.o | $(LIBDIR)
-	ar rcs $@ $^
+$(LIB): $(LIBOBJS) | $(LIBDIR)
+	ar rcs $(LIB) $(LIBOBJS)
 
-# Link final executable with static library
 $(TARGET): $(OBJDIR)/main.o $(LIB) | $(BINDIR)
 	$(CC) $(CFLAGS) $(OBJDIR)/main.o -L$(LIBDIR) -lmyutils -o $(TARGET)
 
 clean:
 	rm -f $(OBJDIR)/*.o
-	rm -f $(TARGET)
-	rm -f $(LIB)
+	rm -f $(BINDIR)/*
+	rm -f $(LIBDIR)/*

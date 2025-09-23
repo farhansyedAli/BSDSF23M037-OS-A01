@@ -5,7 +5,6 @@
 #include "../include/myfilefunctions.h"
 
 int main(void) {
-
     printf("--- Testing String Functions ---\n");
     char a[200];
     mystrcpy(a, "Hello");
@@ -18,9 +17,7 @@ int main(void) {
     printf("after mystrcat: '%s' (len=%d)\n", a, mystrlen(a));
 
     // prepare a temporary sample file for testing wordCount / mygrep
-
     FILE* f = fopen("test.txt", "w+");
-
     if (!f) {
         perror("fopen");
         return 1;

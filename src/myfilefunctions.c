@@ -1,13 +1,10 @@
 #include "../include/myfilefunctions.h"
-#define _GNU_SOURCE
-#include "sys/types.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 
 // wordCount: counts lines, words, chars. Return 0 on success.
-
 int wordCount(FILE* file, int* lines, int* words, int* chars) {
     if (!file || !lines || !words || !chars) return -1;
     rewind(file);
@@ -32,8 +29,6 @@ int wordCount(FILE* file, int* lines, int* words, int* chars) {
 
 // mygrep: collect matching lines into dynamically allocated array.
 // returns number of matches (>=0) or -1 on failure.
-// Caller must free(*matches)[i] and then free(*matches) if return > 0.
-
 int mygrep(FILE* fp, const char* search_str, char*** matches) {
     if (!fp || !search_str || !matches) return -1;
     rewind(fp);
@@ -50,8 +45,7 @@ int mygrep(FILE* fp, const char* search_str, char*** matches) {
                 cap *= 2;
                 char** tmp = realloc(arr, cap * sizeof(char*));
                 if (!tmp) {
-                    // cleanup on failure
-                    for (size_t i=0;i<count;i++) free(arr[i]);
+                    for (size_t i = 0; i < count; i++) free(arr[i]);
                     free(arr);
                     free(line);
                     return -1;
@@ -60,7 +54,7 @@ int mygrep(FILE* fp, const char* search_str, char*** matches) {
             }
             arr[count] = malloc(read + 1);
             if (!arr[count]) {
-                for (size_t i=0;i<count;i++) free(arr[i]);
+                for (size_t i = 0; i < count; i++) free(arr[i]);
                 free(arr);
                 free(line);
                 return -1;
@@ -76,7 +70,6 @@ int mygrep(FILE* fp, const char* search_str, char*** matches) {
         rewind(fp);
         return 0;
     }
-    // shrink to fit
     char** final = realloc(arr, count * sizeof(char*));
     if (final) arr = final;
     *matches = arr;
