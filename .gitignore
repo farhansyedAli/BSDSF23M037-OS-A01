@@ -1,0 +1,16 @@
+# Ignore object files
+*.o
+
+# Ignore compiled executables
+bin/*
+
+# Ignore static and dynamic libraries
+lib/*.a
+lib/*.so
+
+# Ignore backup/temporary files
+*~
+*.swp
+
+# Ignore core dumps
+core
