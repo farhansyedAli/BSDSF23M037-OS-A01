@@ -21,8 +21,6 @@ int main(void) {
 
     FILE* f = fopen("test.txt", "w+");
 
-    FILE* f = fopen("sample_input.txt", "w+");
-
     if (!f) {
         perror("fopen");
         return 1;
